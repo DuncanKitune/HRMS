@@ -1,0 +1,21 @@
+<!-- templates/payslip_email.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>payslip_email</title>
+</head>
+<body>
+    <h1>Payslip for {{ payslip.month|date:"F, Y" }}</h1>
+    <p>Dear {{ payslip.employee.full_name }},</p>
+    <p>Here are the details of your payslip for the month of {{ payslip.month|date:"F, Y" }}:</p>
+    <ul>
+        <li><strong>Gross Pay:</strong> {{ payslip.gross_pay }}</li>
+        <li><strong>Net Pay:</strong> {{ payslip.net_pay }}</li>
+        <li><strong>Deductions:</strong> {{ payslip.deductions }}</li>
+        <!-- Add other fields as needed -->
+    </ul>
+    <p>Thank you.</p>
+</body>
+</html>

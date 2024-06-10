@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Employee Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ employee.full_name }}</h1>
+    <h2>Job Group: {{ job_group }}</h2>
+    <h2>Department: {{ department }}</h2>
+    <p>Leave Days: {{ leave_days }}</p>
+    <p>Off Days: {{ off_days }}</p>
+    <h2>Benefits:</h2>
+
+    <ul>
+        {% for benefit in benefits %}
+        <li>{{ benefit.name }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Payslips:</h2>
+    <ul>
+        {% for payslip in payslips %}
+        <li>{{ payslip.month }}: <a href="{% url 'generate_payslip_pdf' payslip.id %}">Download PDF</a></li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'apply_leave' %}">Apply for Leave</a>
+    <a href="{% url 'apply_contract_renewal' %}">Apply for Contract Renewal</a>
+</body>
+</html>

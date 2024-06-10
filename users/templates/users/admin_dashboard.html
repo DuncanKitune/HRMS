@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h2>Admin Dashboard</h2>
+    
+    <h3>Employees</h3>
+    <a href="{% url 'create_employee' %}">Create Employee</a>
+    <table>
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Actions</th>
+        </tr>
+        {% for employee in employees %}
+        <tr>
+            <td>{{ employee.full_name }}</td>
+            <td>{{ employee.user.email }}</td>
+            <td>{{ employee.department.name }}</td>
+            <td><a href="{% url 'issue_letter' employee.id %}">Issue Letter</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Leave Applications</h3>
+    <table>
+        <tr>
+            <th>Employee</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Reason</th>
+            <th>Status</th>
+        </tr>
+        {% for leave in leave_applications %}
+        <tr>
+            <td>{{ leave.employee.full_name }}</td>
+            <td>{{ leave.start_date }}</td>
+            <td>{{ leave.end_date }}</td>
+            <td>{{ leave.reason }}</td>
+            <td>{{ leave.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Contract Renewals</h3>
+    <table>
+        <tr>
+            <th>Employee</th>
+            <th>Renewal Request Date</th>
+            <th>Status</th>
+        </tr>
+        {% for renewal in contract_renewals %}
+        <tr>
+            <td>{{ renewal.employee.full_name }}</td>
+            <td>{{ renewal.renewal_request_date }}</td>
+            <td>{{ renewal.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Issued Letters</h3>
+    <table>
+        <tr>
+            <th>Employee</th>
+            <th>Type</th>
+            <th>Subject</th>
+            <th>Content</th>
+            <th>Date Issued</th>
+        </tr>
+        {% for letter in issued_letters %}
+        <tr>
+            <td>{{ letter.employee.full_name }}</td>
+            <td>{{ letter.get_type_display }}</td>
+            <td>{{ letter.subject }}</td>
+            <td>{{ letter.content }}</td>
+            <td>{{ letter.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Payslips</h3>
+    <table>
+        <tr>
+            <th>Employee</th>
+            <th>Month</th>
+            <th>Basic Salary</th>
+            <th>Allowances</th>
+            <th>Deductions</th>
+            <th>Net Pay</th>
+            <th>Actions</th>
+        </tr>
+        {% for payslip in payslips %}
+        <tr>
+            <td>{{ payslip.employee.full_name }}</td>
+            <td>{{ payslip.month }}</td>
+            <td>{{ payslip.basic_salary }}</td>
+            <td>{{ payslip.allowances }}</td>
+            <td>{{ payslip.deductions }}</td>
+            <td>{{ payslip.net_pay }}</td>
+            <td>
+                <a href="{% url 'generate_payslip_pdf' payslip.id %}">Generate PDF</a> |
+                <a href="{% url 'send_payslip_email_view' payslip.id %}">Send Email</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Statutory Deductions</h3>
+    <table>
+        <tr>
+            <th>Deduction Name</th>
+            <th>Percentage</th>
+            <th>Actions</th>
+        </tr>
+        {% for deduction in statutory_deductions %}
+        <tr>
+            <td>{{ deduction.name }}</td>
+            <td>{{ deduction.percentage }}</td>
+            <td><a href="{% url 'manage_statutory_deductions' deduction.id %}">Manage</a></td>
+    
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

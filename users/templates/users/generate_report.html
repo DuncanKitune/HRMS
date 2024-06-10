@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Employee Dashboard</title>
+</head>
+<body>
+   
+<h1>Generate Report</h1>
+<form method="post">
+    {% csrf_token %}
+    <label for="report_type">Report Type:</label>
+    <select name="report_type" id="report_type">
+        <option value="payroll_summary">Payroll Summary</option>
+        <option value="individual_payslips">Individual Payslips</option>
+        <option value="statutory_deductions">Statutory Deductions</option>
+    </select>
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email" required>
+    <button type="submit">Generate and Email</button>
+</form>
+</body>

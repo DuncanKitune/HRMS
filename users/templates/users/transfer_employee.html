@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Employee Dashboard</title>
+</head>
+<body>
+    <!-- templates/dashboard/transfer_employee.html -->
+<h1>Transfer Employee</h1>
+<p>Employee: {{ employee.full_name }}</p>
+<form method="post">
+    {% csrf_token %}
+    <label for="new_department">New Department:</label>
+    <select name="new_department" id="new_department">
+        {% for department in departments %}
+            <option value="{{ department.id }}">{{ department.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Transfer</button>
+</form>
+</body>

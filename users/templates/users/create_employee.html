@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Create Employee</title>
+</head>
+<body>
+    <h2>Create Employee</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="full_name">Full Name:</label>
+        <input type="text" aria-label="text" name="full_name" required> <label><br>
+        <label for="email" label="text" >Email:</label>
+        <input type="email" name="email" required><label><br>
+        <label for="department">Department:</label>
+        <select name="department" aria-label="text"  required>
+            {% for department in departments %}
+            <option value="{{ department.id }}">{{ department.name }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="salary">Salary:</label>
+        <input type="number" label="text"  name="salary" step="0.01" required><br>
+        <button type="submit">Create</button>
+    </form>
+</body>
+</html>
