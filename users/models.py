@@ -3,7 +3,7 @@ from django.conf import settings
 from PIL import Image
 
 # Create your models here.
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser, User,Group, Permission
 from django.utils.translation import gettext_lazy as _
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
