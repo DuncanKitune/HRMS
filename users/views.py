@@ -15,7 +15,17 @@ from openpyxl import Workbook
 from human.models import Department
 from .models import CustomUser, Employee, Department, JobGroup, Profile, Payslip, Letter, StatutoryDeduction, LeaveApplication, ContractRenewal
 from .forms import CustomUserCreationForm, CustomUserChangeForm, LeaveApplicationForm, ContractRenewalForm, IssueLetterForm, StatutoryDeductionForm, EmployeeCreationForm, EmployeeChangeForm
-#  LeaveApplicationForm, ContractRenewalForm, IssueLetterForm, StatutoryDeductionForm
+
+
+# homepage added 21/6
+def home(request):
+    
+    return render(request, 'users/homepage.html')
+# return HttpResponse("Welcome to the Home Page")
+    # if request.user.is_superuser:
+    #     return redirect('admin_dashboard')
+    # else:
+    #     return redirect('employee_dashboard')
 
 # View for logging in
 @login_required
@@ -351,3 +361,67 @@ def add_statutory_deduction(request):
     else:
         form = StatutoryDeductionForm()
     return render(request, 'users/add_statutory_deduction.html', {'form': form})
+
+#added 21/6
+# Transfer Employee
+@login_required
+@permission_required('users.change_department', raise_exception=True)
+def transfer_employee(request, employee_id):
+    employee = get_object_or_404(Employee, id=employee_id)
+    if request.method == 'POST':
+        new_department_id = request.POST.get('new_department')
+        new_department = Department.objects.get(id=new_department_id)
+        employee.department = new_department
+        employee.save()
+        messages.success(request, f'{employee.full_name} transferred to {new_department.name} successfully.')
+        return redirect('admin_dashboard')
+    departments = Department.objects.all()
+    return render(request, 'transfer_employee.html', {'employee': employee, 'departments': departments})
+
+# Account Activation Email
+@login_required
+@permission_required('users.add_customuser', raise_exception=True)
+def account_activation_email(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    if request.method == 'POST':
+        subject = 'Activate Your Account'
+        template = render_to_string('account_activation_email.html', {'user': user})
+        plain_message = strip_tags(template)
+        send_mail(subject, plain_message, settings.EMAIL_HOST_USER, [user.email])
+        messages.success(request, 'Account activation email sent successfully!')
+        return redirect('admin_dashboard')
+    return render(request, 'account_activation_email.html', {'user': user})
+
+# Alter Employee Benefits
+@login_required
+@permission_required('users.change_employee', raise_exception=True)
+def alter_employee_benefits(request, employee_id):
+    employee = get_object_or_404(Employee, id=employee_id)
+    if request.method == 'POST':
+        form = EmployeeChangeForm(request.POST, instance=employee)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'{employee.full_name} benefits altered successfully.')
+            return redirect('admin_dashboard')
+    else:
+        form = EmployeeChangeForm(instance=employee)
+    return render(request, 'alter_employee_benefits.html', {'form': form})
+
+# Approve Leave
+@login_required
+@permission_required('users.change_leaveapplication', raise_exception=True)
+def approve_leave(request, leave_id):
+    leave_application = get_object_or_404(LeaveApplication, id=leave_id)
+    if request.method == 'POST':
+        leave_application.status = 'Approved'
+        leave_application.save()
+        messages.success(request, 'Leave application approved successfully!')
+        return redirect('admin_dashboard')
+    return render(request, 'approve_leave.html', {'leave_application': leave_application})
+
+# Generate Report
+@login_required
+@permission_required('users.view_report', raise_exception=True)
+def generate_report(request):
+    # Implement report generation logic here
+    return render(request, 'generate_report.html') 

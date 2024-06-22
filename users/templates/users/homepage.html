@@ -1,0 +1,212 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS - Dashboard</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="{% static 'scripts.js' %}" defer></script>
+   
+   <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background: #007BFF;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background: #333;
+            color: white;
+            padding: 10px 0;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+        }
+        nav a:hover {
+            background: #575757;
+        }
+        .container {
+            padding: 20px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        .card img {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to HRMS</h1>
+        <p>Your one-stop solution for managing human resources efficiently</p>
+    </header>
+    <nav>
+        <a href="#">Home</a>
+        {% if user.is_authenticated %}
+            {% if user.is_superuser %}
+                <a href="{% url 'admin_dashboard' %}">Admin Dashboard</a>
+            {% else %}
+                <a href="{% url 'employee_dashboard' %}">Employee Dashboard</a>
+            {% endif %}
+            <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </nav>
+    <div class="container">
+        {% if user.is_authenticated %}
+            {% if user.is_superuser %}
+                <div class="grid-container">
+                    <!-- Admin Dashboard Cards -->
+                    <div class="card">
+                        <!-- <img src="{% static 'images/employee-icon.png' %}" alt="Employees">
+                        <h2>Manage Employees</h2>
+                        <p>Manage employee information</p> -->
+                        
+                        <table>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Actions</th>
+                            </tr>
+                            {% for employee in employees %}
+                            <tr>
+                                <td>{{ employee.full_name }}</td>
+                                <td>{{ employee.user.email }}</td>
+                                <td>{{ employee.department.name }}</td>
+                                <td><a href="{% url 'issue_letter' employee.id %}">Issue Letter</a></td>
+                            </tr>
+                            {% endfor %}
+                           
+                    </div>
+                    <div class="card">
+                        
+                    </div>
+                    <div class="card">
+                        <table>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                            </tr>
+                            {% for leave in leave_applications %}
+                            <tr>
+                                <td>{{ leave.employee.full_name }}</td>
+                                <td>{{ leave.start_date }}</td>
+                                <td>{{ leave.end_date }}</td>
+                                <td>{{ leave.reason }}</td>
+                                <td>{{ leave.status }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    <div class="card">
+                        <table>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Renewal Request Date</th>
+                                <th>Status</th>
+                            </tr>
+                            {% for renewal in contract_renewals %}
+                            <tr>
+                                <td>{{ renewal.employee.full_name }}</td>
+                                <td>{{ renewal.renewal_request_date }}</td>
+                                <td>{{ renewal.status }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    <div class="card">
+                        <table>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Type</th>
+                                <th>Subject</th>
+                                <th>Content</th>
+                                <th>Date Issued</th>
+                            </tr>
+                            {% for letter in issued_letters %}
+                            <tr>
+                                <td>{{ letter.employee.full_name }}</td>
+                                <td>{{ letter.get_type_display }}</td>
+                                <td>{{ letter.subject }}</td>
+                                <td>{{ letter.content }}</td>
+                                <td>{{ letter.created_at }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    
+                    </div>
+                    <div class="card">
+                        <table>
+                            <tr>
+                                <th>Deduction Name</th>
+                                <th>Percentage</th>
+                                <th>Actions</th>
+                            </tr>
+                            {% for deduction in statutory_deductions %}
+                            <tr>
+                                <td>{{ deduction.name }}</td>
+                                <td>{{ deduction.percentage }}</td>
+                                <td><a href="{% url 'manage_statutory_deductions' deduction.id %}">Manage</a></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+            
+                   
+                        <h2>Employee Dashboard</h2>
+                        <!-- Employee specific content -->
+                        <a href="{% url 'employee_dashboard' %}">Go to Employee Dashboard</a>
+                    {% endif %}
+                {% else %}
+                    <p>Please <a href="{% url 'login' %}">login</a> to access the dashboard.</p>
+                {% endif %}
+            
+                </div>
+                <!-- Employee specific content -->
+                <a href="{% url 'employee_dashboard' %}">Go to Employee Dashboard</a>
+                
+                <p>Please <a href="{% url 'login' %}">login</a> to access the dashboard.</p>        
+    </div>
+    <footer>
+        <p>Contact us: info@hrms.com | +1 800 123 4567</p>
+        <p>&copy; 2024 HRMS. All rights reserved.</p>
+    </footer>
+</body>
+</html>
